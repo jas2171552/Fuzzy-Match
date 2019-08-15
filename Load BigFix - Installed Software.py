@@ -2,7 +2,7 @@
 """
 Created on Fri Aug  9 13:40:23 2019
 
-@author: e1208569
+@author: Jason Richmond
 """
 
 from urllib.request import Request, urlopen
@@ -33,30 +33,29 @@ from itertools import islice
 def write_installed_software_to_db():
     
     conn = pyodbc.connect('Driver={SQL Server};'
-                          'Server=JTCTLSWICSDB03,28001;'
-                          'Database=ERMReporting;'
+                          'Server=xxxxxxx;'
+                          'Database=xxxxxxx;'
                           'Trusted_Connection=yes;')
     cursor = conn.cursor()
 
     try:
         
         # Kick of SQL Server processes to populate reporting tables
-        #cursor.execute("EXEC [dbo].[proc_DimReportPeriod];")
+        #cursor.execute("EXEC [dbo].[proc_xxxxxxx];")
         #cursor.commit()
         
-        yourcsv = r'Z:\_Projects\_Jason Richmond\Big Fix\Installed Software.csv'
+        yourcsv = r'Z:FILEPATH'
         #output_file = open("sqlfile.txt","w") 
-        table = 'stage.stg_BigFix_InstalledSoftware'
+        table = 'xxxxxxx'
         row_cnt = 0
         db_vals = ''
         
         
-        cursor.execute("DELETE FROM stage.stg_BigFix_InstalledSoftware;")
+        cursor.execute("DELETE FROM xxxxxxx;")
         cursor.commit()
         #INSERT SOURCE RECORDS TO DESTINATION
         with open(yourcsv) as csvfile:
             csvFile = csv.reader(csvfile, delimiter=',')
-            #csvFile = csv.reader(isslice(csvfile, start=29000, delimiter=','))
             headers = ['ComputerName','UserName', 'InstalledApplications','SplitFlag','ComputerSerialNumber','ComputerModel','OS','IP_Address','LastReportTime']
             insert = 'INSERT INTO {} ('.format(table) + ', '.join(headers) + ') VALUES '
             next(csvfile)
@@ -79,36 +78,17 @@ def write_installed_software_to_db():
                 InstalledApplications = re.sub(r'[^{0}\n]'.format(string.printable), '', InstalledApplications)
                 InstalledApplications = re.sub(r'[^\x00-\x7f]',r'', InstalledApplications) 
                 InstalledApplications = InstalledApplications.replace('\'', '`')
-                #InstalledApplications = set(InstalledApplications.printable)
-                #print(row[2])
                 
                 col_len = len(InstalledApplications)
-                #print(col_len)
                 
                 InstalledApplications = InstalledApplications.replace("\n", "~")
-                db_vals = '(\'' + ComputerName + '\', \'' + UserName + '\', \'' + InstalledApplications + '\', \'N\', \'' + ComputerSerialNumber + '\', \'' + ComputerModel + '\', \'' + OS + '\', \'' + IP_Address + '\', \'' + LastReportTime + '\');' 
-                #print(insert + db_vals)
+                db_vals = '(\'' + xxxxxxx + '\', \'' + xxxxxxx + '\', \'' + xxxxxxx + '\', \'N\', \'' + xxxxxxx + '\', \'' + xxxxxxx + '\', \'' + xxxxxxx + '\', \'' + xxxxxxx + '\', \'' + xxxxxxx + '\');' 
                 cursor.execute(insert + db_vals)
                 cursor.commit()
                 
-                """
-                ApplicationName = re.sub(r'[^{0}\n]'.format(string.printable), '', ApplicationName)
-                ApplicationName = re.sub(r'[^\x00-\x7f]',r'', ApplicationName) 
-                ApplicationName = ApplicationName.replace('\'', '`')
-                
-                PublisherName = re.sub(r'[^{0}\n]'.format(string.printable), '', PublisherName)
-                PublisherName = re.sub(r'[^\x00-\x7f]',r'', PublisherName) 
-                PublisherName = PublisherName.replace('\'', '`')
-                """
             
         print(row_cnt)
-         
-        """
-        mail_to = 'jason.richmond@bkfs.com'
-        mail_subject = 'BigFix Data Load - Successful'
-        mail_body = "BigFix loaded " 
-        send_email(mail_to, mail_subject, mail_body)
-        """
+
     
     except:
         print(row_cnt)
@@ -116,45 +96,38 @@ def write_installed_software_to_db():
         print("Unexpected error:", sys.exc_info()[0])
         pass
         
-        """
-        #Email results
-        mail_to = 'jason.richmond@bkfs.com'
-        mail_subject = 'BigFix Data Load - Error' 
-        mail_body = "Check logs for error details\n" #+ sys.exc_info()[0]
-        send_email(mail_to, mail_subject, mail_body)
-        """
+
 
 def write_approve_software_to_db():
     
     conn = pyodbc.connect('Driver={SQL Server};'
-                          'Server=JTCTLSWICSDB03,28001;'
-                          'Database=ERMReporting;'
+                          'Server=xxxxxxx;'
+                          'Database=xxxxxxx;'
                           'Trusted_Connection=yes;')
     cursor = conn.cursor()
 
     try:
         
         # Kick of SQL Server processes to populate reporting tables
-        #cursor.execute("EXEC [dbo].[proc_DimReportPeriod];")
+        #cursor.execute("EXEC [dbo].[proc_xxxxxxx];")
         #cursor.commit()
         
-        yourcsv = r'Z:\_Projects\_Jason Richmond\Big Fix\Approved Software.csv'
+        yourcsv = r'Z:FILEPATH'
         #output_file = open("sqlfile.txt","w") 
-        table = 'stage.stg_BigFix_ApprovedSoftware'
+        table = 'xxxxxxx'
         row_cnt = 0
         
         
         
-        cursor.execute("DELETE FROM stage.stg_BigFix_ApprovedSoftware;")
+        cursor.execute("DELETE FROM xxxxxxx;")
         cursor.commit()
-        #INSERT SOURCE RECORDS TO DESTINATION
         with open(yourcsv) as csvfile:
             csvFile = csv.reader(csvfile, delimiter=',')
             #headers = next(csvFile)
             headers = ['ProductVersion','ApplicationName','Category','PublisherName','ID','Restricted','RestrictedUse','SoftwareRestriction','ApprovalType','Inactive','ItemType','Path']
             insert = 'INSERT INTO {} ('.format(table) + ', '.join(headers) + ') VALUES '
-            next(csvfile)
-            for row in csvFile: #[29000:]:
+            next(csvfile) # skip first row of CSV file
+            for row in csvFile: 
                 row_cnt += 1 
                 ProductVersion = row[0].rstrip(' ').lstrip(' ')
                 ApplicationName = row[1].rstrip(' ').lstrip(' ')
@@ -187,8 +160,6 @@ def write_approve_software_to_db():
                     cursor.execute(insert + db_vals)
                     cursor.commit()
                 
-                
-                
                 elif col_len > 0:
                     SoftwareRestriction = SoftwareRestriction[0:4999]
                     db_vals = '(\'' + ProductVersion + '\', \'' + ApplicationName + '\', \'' + Category + '\', \'' + PublisherName + '\', \'' + ID + '\', \'' + Restricted + '\', \'' + RestrictedUse + '\', \'' + SoftwareRestriction + '\', \'' + ApprovalType + '\', \'' + Inactive + '\', \'' + ItemType + '\', \'' + Path + '\');' 
@@ -200,33 +171,10 @@ def write_approve_software_to_db():
                     quit
                 
         print(row_cnt)
-       
-        
-        """
-        #print(rows)
-        loadtxt = r'Z:\_Projects\_Jason Richmond\Big Fix\sqlfile.txt'
-        loadCnt = 0 
-        with open(loadtxt, "r") as loadfile:
-            for i, line in enumerate(loadfile):
-                sql = line#loadfile.read()
-                loadCnt +=0
-                #print(sql)
-                cursor.execute(sql)
-                cursor.commit()
-            
-        loadfile.close()
-        
-        print(loadCnt)
-        """
-        
+     
         #emailTable = tabulate(rows, headers=['Load Date', 'Process', 'Start', 'End', 'Status', 'Loaded #'], tablefmt='simple')
         #print(emailTable)
-        """
-        mail_to = 'jason.richmond@bkfs.com'
-        mail_subject = 'BigFix Data Load - Successful'
-        mail_body = "BigFix loaded " 
-        send_email(mail_to, mail_subject, mail_body)
-        """
+
     
     except:
         print(row_cnt)
@@ -234,14 +182,7 @@ def write_approve_software_to_db():
         print(col_len)
         print("Unexpected error:", sys.exc_info()[0])
         pass
-        """
-        print("Unexpected error:", sys.exc_info()[0])
-        #Email results
-        mail_to = 'jason.richmond@bkfs.com'
-        mail_subject = 'BigFix Data Load - Error' 
-        mail_body = "Check logs for error details\n" #+ sys.exc_info()[0]
-        send_email(mail_to, mail_subject, mail_body)
-        """
+
 
 #######################################################
 #######################################################
@@ -264,4 +205,4 @@ def send_email(mail_to, mail_subject, mail_body):
 
 
 write_installed_software_to_db()
-#write_approve_software_to_db()
+write_approve_software_to_db()
