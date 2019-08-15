@@ -2,7 +2,7 @@
 """
 Created on Tue Aug 13 14:22:52 2019
 
-@author: e1208569
+@author: Jason Richmond
 """
 # pip install fuzzywuzzy 
 #pip install python-Levenshtein
@@ -12,9 +12,6 @@ from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 from fuzzywuzzy.fuzz import partial_ratio
 import pyodbc
-
-#df = pd.read_csv('room_type.csv')
-#df.head(10)
 
 
 def match_name(applicationCombined, approveSoftware, min_score=0):
@@ -41,20 +38,20 @@ def match_name(applicationCombined, approveSoftware, min_score=0):
 
 
 conn = pyodbc.connect('Driver={SQL Server};'
-                          'Server=JTCTLSWICSDB03,28001;'
-                          'Database=ERMReporting;'
+                          'Server=xxxxxxx;'
+                          'Database=xxxxxxx;'
                           'Trusted_Connection=yes;')
 cursor = conn.cursor()
 
 approvedCursor = conn.cursor()
 approvedCursor.execute('''
-       SELECT CAST(ApprovedSoftwareKey AS VARCHAR(10)) ApprovedSoftwareKey, ApplicationName, ApplicationVersion FROM reporting.BigFix_ApprovedSoftware ORDER BY ApplicationName, ApplicationVersion;
+       SELECT xxxxxxx FROM xxxxxxx ORDER BY xxxxxxx;
        ''')
 approveSoftware = approvedCursor.fetchall()
 #print(approveSoftware)
 
 cursor.execute('''
-       SELECT InstalledSoftwareKey, ApplicationName, ApplicationVersion FROM reporting.BigFix_InstalledSoftware;
+       SELECT xxxxxxx FROM xxxxxxx;
        ''')
 installedSoftware = cursor.fetchall()
 #print(installedSoftware) 
@@ -75,7 +72,7 @@ for row in installedSoftware:
         matchPct = str(matchPct[1])
         
         key = conn.cursor()
-        sql = 'UPDATE reporting.BigFix_InstalledSoftware SET ApprovedSoftwareKey = \'' +  aprvdAppKey + ' \', MatchPCT = \'' + matchPct + '\' WHERE InstalledSoftwareKey = \'' + installedApplicationKey + '\';'
+        sql = 'UPDATE xxxxxxx SET xxxxxxx = \'' +  aprvdAppKey + ' \', MatchPCT = \'' + matchPct + '\' WHERE xxxxxxx = \'' + installedApplicationKey + '\';'
         key.execute(sql)
         key.commit()
         
