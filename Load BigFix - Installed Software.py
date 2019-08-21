@@ -193,7 +193,7 @@ def send_email(mail_to, mail_subject, mail_body):
     
     outlook = win32.Dispatch('outlook.application')
     mail = outlook.CreateItem(0)
-    mail.To = mail_to #'jason.richmond@bkfs.com'
+    mail.To = mail_to #'xxxxxx@xxxx.com'
     mail.Subject = mail_subject#'Cofense info'
     mail.Body = mail_body# 'Missing fields: ' + str(list_of_missing_fields) + '\nNew Fields: ' + str(list_of_new_fields)
     #mail.HTMLBody = '<h2>HTML Message body</h2>' #this field is optional
